@@ -22,9 +22,21 @@ export default function Visualizer() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: { payload: any }[] }) => {
+  type TrackData = {
+    image: string;
+    name: string;
+    artist: string;
+    x: number; // Popularity
+    y: number; // Duration in seconds
+  };
+  
+  const CustomTooltip = ({
+    active,
+    payload,
+  }: { active?: boolean; payload?: { payload: TrackData }[] }) => {
     if (active && payload && payload.length) {
       const track = payload[0].payload;
+  
       return (
         <div className="bg-white p-3 shadow-lg rounded-md">
           <img src={track.image} alt={track.name} className="w-20 h-20 rounded-md mb-2" />
@@ -37,6 +49,7 @@ export default function Visualizer() {
     }
     return null;
   };
+  
 
   return (
     <div className="bg-white text-black min-h-screen flex flex-col items-center px-6">
