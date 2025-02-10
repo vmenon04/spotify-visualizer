@@ -64,13 +64,13 @@ export default function Home() {
             <DialogTitle>Enable Cross-Site Tracking</DialogTitle>
           </DialogHeader>
           <p className="mb-6 text-gray-600">
-            Safari may be blocking login due to "Prevent Cross-Site Tracking." Please disable it in:
+            Safari may be blocking login due to &quot;Prevent Cross-Site Tracking&quot;. Please disable it in:
           </p>
           <ul className="list-disc list-inside text-gray-600">
             <li>Open **Safari** on your device.</li>
   const [showTrackingWarning, setShowTrackingWarning] = useState(false);
             <li>Go to **Settings &gt; Safari**.</li>
-            <li>Find **Prevent Cross-Site Tracking** and turn it **OFF**.</li>
+            <li>Find **&quot;Prevent Cross-Site Tracking&quot;** and turn it **OFF**.</li>
             <li>Reload this page and try again.</li>
           </ul>
           <Button onClick={() => setShowTrackingWarning(false)} className="mt-4 bg-black text-white">
