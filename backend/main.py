@@ -166,7 +166,7 @@ def get_top_tracks(request: Request):
     return {"tracks": tracks}
 
 @app.get("/taste-visualizer")
-def get_visualizer_data():
+def get_visualizer_data(request: Request):
     """Fetches all saved tracks and restores the y-axis to track duration."""
     try:
         all_tracks = []
@@ -206,7 +206,7 @@ def get_visualizer_data():
         return {"error": str(e)}
 
 @app.get("/generate-mosaic")
-def generate_mosaic():
+def generate_mosaic(request: Request):
     """Fetch all saved album covers (not just 50) and generate a wild, abstract blended mosaic image."""
     try:
         token = TOKEN_STORAGE.get("access_token")
@@ -263,7 +263,7 @@ def generate_mosaic():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/saved-tracks")
-def get_saved_tracks():
+def get_saved_tracks(request: Request):
     """
     Fetch all saved tracks and return album covers, track names, artist names, album names, release dates, durations, and popularity scores.
     """
