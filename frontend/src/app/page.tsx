@@ -60,13 +60,26 @@ export default function Home() {
           <p className="mb-6 text-gray-600">Log in with Spotify to explore your listening habits.</p>
           <Button
             className="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition"
-            onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/login`; // ✅ Uses env variable
-              }}
-              
-          >
+            onClick={async () => {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/login`, {
+                method: "GET",
+                credentials: "include", // ✅ Ensures cookies are included
+                });
+
+                const data = await response.json();
+                if (data.access_token) {
+                    console.log("✅ Token received from backend:", data.access_token);
+                    localStorage.setItem("spotify_token", data.access_token); // ✅ Store in localStorage as backup
+                    setToken(data.access_token);
+                    setShowDialog(false);
+                } else {
+                    console.error("❌ Login failed:", data);
+                }
+            }}
+            >
             Connect with Spotify
-          </Button>
+            </Button>
+
         </DialogContent>
       </Dialog>
 
