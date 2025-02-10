@@ -73,26 +73,34 @@ export default function Home() {
         </DialogContent>
       </Dialog>
 
-              {/* ✅ New Dialog for Cross-Site Tracking Issue */}
-              <Dialog open={showTrackingWarning} onOpenChange={setShowTrackingWarning}>
+
+      <Dialog open={showTrackingWarning} onOpenChange={setShowTrackingWarning}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Enable Cross-Site Tracking</DialogTitle>
-          </DialogHeader>
-          <p className="mb-6 text-gray-600">
-            Safari may be blocking login due to &quot;Prevent Cross-Site Tracking&quot;. Please disable it in:
-          </p>
-          <ul className="list-disc list-inside text-gray-600">
-            <li>Open **Safari** on your device.</li>
-            <li>Go to **Settings &gt; Safari**.</li>
-            <li>Find **&quot;Prevent Cross-Site Tracking&quot;** and turn it **OFF**.</li>
+            <DialogHeader>
+            <DialogTitle>Enable Cross-Site Tracking in Your Browser</DialogTitle>
+            </DialogHeader>
+            <p className="mb-6 text-gray-600">
+            Your browser may be blocking login due to <em>Prevent Cross-Site Tracking</em>. Follow these steps to fix it:
+            </p>
+            <p className="mb-4 text-gray-800 font-semibold">If you're using Safari:</p>
+            <ul className="list-disc list-inside text-gray-600">
+            <li>Open <strong>Safari</strong> on your device.</li>
+            <li>Go to <strong>Settings &gt; Safari</strong>.</li>
+            <li>Find <em>Prevent Cross-Site Tracking</em> and turn it <strong>OFF</strong>.</li>
             <li>Reload this page and try again.</li>
-          </ul>
-          <Button onClick={() => setShowTrackingWarning(false)} className="mt-4 bg-black text-white">
+            </ul>
+            <p className="mt-4 mb-4 text-gray-800 font-semibold">If you're using another browser:</p>
+            <ul className="list-disc list-inside text-gray-600">
+            <li>Check your browser's privacy settings.</li>
+            <li>Ensure cookies and cross-site tracking are allowed.</li>
+            <li>Try logging in again.</li>
+            </ul>
+            <Button onClick={() => setShowTrackingWarning(false)} className="mt-4 bg-black text-white">
             Close
-          </Button>
+            </Button>
         </DialogContent>
-      </Dialog>
+        </Dialog>
+
 
       {!showDialog && token && (
         <div className="max-w-3xl w-full mt-16 text-center">
