@@ -38,8 +38,9 @@ export default function Home() {
           <Button
             className="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition"
             onClick={() => {
-              window.location.href = "http://localhost:8000/login"; // ✅ Redirects to backend for auth
-            }}
+                window.location.href = `${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/login`; // ✅ Uses env variable
+              }}
+              
           >
             Connect with Spotify
           </Button>
