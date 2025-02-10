@@ -70,7 +70,7 @@ export default function Home() {
             <li>Open **Safari** on your device.</li>
   const [showTrackingWarning, setShowTrackingWarning] = useState(false);
             <li>Go to **Settings &gt; Safari**.</li>
-            <li>Find **"Prevent Cross-Site Tracking"** and turn it **OFF**.</li>
+            <li>Find **Prevent Cross-Site Tracking** and turn it **OFF**.</li>
             <li>Reload this page and try again.</li>
           </ul>
           <Button onClick={() => setShowTrackingWarning(false)} className="mt-4 bg-black text-white">
