@@ -15,14 +15,14 @@ app = FastAPI()
 SPOTIFY_API_BASE = "https://api.spotify.com/v1"
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://localhost:8000/callback")
+REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "https://spotify-visualizer-api.onrender.com/callback")
 
 # Store access & refresh tokens
 TOKEN_STORAGE = {"access_token": None, "refresh_token": None}
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
