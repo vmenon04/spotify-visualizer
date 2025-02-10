@@ -60,11 +60,12 @@ def callback(request: Request, code: str = None):
         redirect.set_cookie(
             key="spotify_token",
             value=token_info["access_token"],
-            httponly=True,  # Prevent access from JavaScript
-            secure=True,    # Use HTTPS in production
-            samesite="Strict",  # Protect against CSRF
-            max_age=3600,  # 1 hour expiration
+            httponly=True,  # Ensures the cookie is only accessible via HTTP requests
+            secure=True,    # Ensures the cookie is only sent over HTTPS
+            samesite="Strict",  # Prevents cross-site requests from sending the cookie
+            max_age=3600    # Sets the cookie to expire in 1 hour
         )
+
         return redirect
 
     return JSONResponse({"error": "Authentication failed", "details": token_info}, status_code=400)
@@ -87,11 +88,13 @@ from fastapi import Cookie
 
 @app.get("/auth-status")
 def auth_status(request: Request):
-    token = request.cookies.get("spotify_token")
-    print(f"🔍 DEBUG: Cookies Received → {request.cookies}")
+    cookies = request.cookies
+    token = cookies.get("spotify_token")
+    print(f"🔍 DEBUG: Cookies Received → {cookies}")  # Logs all cookies sent in the request
     is_logged_in = bool(token)
     print(f"🔍 DEBUG: Auth Check Response → logged_in: {is_logged_in}, token: {token}")
     return {"logged_in": is_logged_in, "token": token if is_logged_in else None}
+
 
 
 

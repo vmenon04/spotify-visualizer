@@ -15,7 +15,7 @@ export default function Top25() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/top-tracks")
+    fetch("http://localhost:8000/top-tracks", {credentials: "include"}) 
       .then((res) => res.json())
       .then((data) => {
         console.log("API Response:", data); // ✅ Debug Log

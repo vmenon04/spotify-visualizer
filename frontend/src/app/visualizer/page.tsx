@@ -9,7 +9,7 @@ export default function Visualizer() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/taste-visualizer`) 
+    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/taste-visualizer`, {credentials: "include"})  
       .then((res) => res.json())
       .then((data) => {
         if (data.tracks) {
@@ -22,34 +22,34 @@ export default function Visualizer() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  type TrackData = {
-    image: string;
-    name: string;
-    artist: string;
-    x: number; // Popularity
-    y: number; // Duration in seconds
-  };
-  
-  const CustomTooltip = ({
-    active,
-    payload,
-  }: { active?: boolean; payload?: { payload: TrackData }[] }) => {
-    if (active && payload && payload.length) {
-      const track = payload[0].payload;
-  
-      return (
-        <div className="bg-white p-3 shadow-lg rounded-md">
-          <img src={track.image} alt={track.name} className="w-20 h-20 rounded-md mb-2" />
-          <p className="text-black font-bold">{track.name}</p>
-          <p className="text-gray-600">{track.artist}</p>
-          <p className="text-gray-500">Duration: {track.y} sec</p>
-          <p className="text-gray-500">Popularity: {track.x}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-  
+type TrackData = {
+  image: string;
+  name: string;
+  artist: string;
+  x: number; // Popularity
+  y: number; // Duration in seconds
+};
+
+const CustomTooltip = ({
+  active,
+  payload,
+}: { active?: boolean; payload?: { payload: TrackData }[] }) => {
+  if (active && payload && payload.length) {
+    const track = payload[0].payload;
+
+    return (
+      <div className="bg-white p-3 shadow-lg rounded-md">
+        <img src={track.image} alt={track.name} className="w-20 h-20 rounded-md mb-2" />
+        <p className="text-black font-bold">{track.name}</p>
+        <p className="text-gray-600">{track.artist}</p>
+        <p className="text-gray-500">Duration: {track.y} sec</p>
+        <p className="text-gray-500">Popularity: {track.x}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 
   return (
     <div className="bg-white text-black min-h-screen flex flex-col items-center px-6">
