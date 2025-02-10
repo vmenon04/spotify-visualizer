@@ -13,10 +13,11 @@ export default function Home() {
   // Check login status from the backend
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {
-      credentials: "include",
+      credentials: "include",  // ✅ Ensures cookies are sent
     })
       .then(res => res.json())
       .then(data => {
+        console.log("🔍 DEBUG: Auth Check Response:", data);  // ✅ Debugging
         if (data.logged_in) {
           setToken(data.token);
           setShowDialog(false);
@@ -25,6 +26,7 @@ export default function Home() {
       })
       .catch(() => setLoading(false));
   }, []);
+  
   
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
