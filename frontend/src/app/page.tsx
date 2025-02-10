@@ -12,7 +12,9 @@ export default function Home() {
 
   // Check login status from the backend
   useEffect(() => {
-    fetch("http://localhost:8000/auth-status") // ✅ Backend now manages auth
+    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {
+      credentials: "include",
+    })
       .then(res => res.json())
       .then(data => {
         if (data.logged_in) {
@@ -23,6 +25,7 @@ export default function Home() {
       })
       .catch(() => setLoading(false));
   }, []);
+  
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
 

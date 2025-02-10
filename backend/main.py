@@ -42,7 +42,7 @@ def callback(request: Request, code: str = None):
     data = {
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": REDIRECT_URI,
+        "redirect_uri": SPOTIFY_REDIRECT_URI,
         "client_id": SPOTIFY_CLIENT_ID,
         "client_secret": SPOTIFY_CLIENT_SECRET,
     }
@@ -52,11 +52,25 @@ def callback(request: Request, code: str = None):
     token_info = response.json()
 
     if "access_token" in token_info:
-        TOKEN_STORAGE["access_token"] = token_info["access_token"]
-        TOKEN_STORAGE["refresh_token"] = token_info.get("refresh_token")
-        return RedirectResponse(f"{FRONTEND_URL}")  
+        access_token = token_info["access_token"]
+        refresh_token = token_info.get("refresh_token")
+
+        TOKEN_STORAGE["access_token"] = access_token
+        TOKEN_STORAGE["refresh_token"] = refresh_token
+
+        # ✅ Store access token in an HTTP-Only cookie (more secure)
+        response = RedirectResponse(f"{FRONTEND_URL}")
+        response.set_cookie(
+            key="spotify_access_token",
+            value=access_token,
+            httponly=True,
+            secure=True,  # Set this to False if testing locally
+            samesite="Lax",
+        )
+        return response
 
     return JSONResponse({"error": "Authentication failed", "details": token_info}, status_code=400)
+
 
 @app.get("/login")
 def login():
@@ -70,8 +84,12 @@ def login():
     return RedirectResponse(auth_url)
 
 @app.get("/auth-status")
-def auth_status():
-    return {"logged_in": bool(TOKEN_STORAGE["access_token"]), "token": TOKEN_STORAGE["access_token"]}
+def auth_status(spotify_access_token: str = Cookie(None)):
+    """
+    Checks if the user is authenticated by looking for the Spotify access token in cookies.
+    """
+    is_logged_in = spotify_access_token is not None
+    return JSONResponse({"logged_in": is_logged_in, "token": spotify_access_token})
 
 @app.get("/get-token")
 def get_token():
