@@ -88,6 +88,7 @@ from fastapi import Cookie
 @app.get("/auth-status")
 def auth_status(request: Request):
     token = request.cookies.get("spotify_token")
+    print(f"🔍 DEBUG: Cookies Received → {request.cookies}")
     is_logged_in = bool(token)
     print(f"🔍 DEBUG: Auth Check Response → logged_in: {is_logged_in}, token: {token}")
     return {"logged_in": is_logged_in, "token": token if is_logged_in else None}

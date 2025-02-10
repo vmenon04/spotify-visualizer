@@ -13,7 +13,7 @@ export default function Home() {
   // Check login status from the backend
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {
-        credentials: "include", // Include cookies in requests
+            credentials: "include", // Include cookies in requests
         })
         .then((res) => res.json())
         .then((data) => {
