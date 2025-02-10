@@ -9,7 +9,7 @@ export default function Visualizer() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/taste-visualizer")
+    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/taste-visualizer`) 
       .then((res) => res.json())
       .then((data) => {
         if (data.tracks) {
@@ -22,7 +22,7 @@ export default function Visualizer() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
     if (active && payload && payload.length) {
       const track = payload[0].payload;
       return (

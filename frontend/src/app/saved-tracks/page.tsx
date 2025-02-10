@@ -14,7 +14,7 @@ export default function SavedTracks() {
   >(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/saved-tracks")
+    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/saved-tracks`) 
       .then((res) => res.json())
       .then((data) => {
         if (data.album_covers) {

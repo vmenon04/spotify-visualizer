@@ -55,7 +55,7 @@ export default function Top25() {
       <Navbar />
       <div className="max-w-2xl w-full mt-12 text-center">
         <h1 className="text-4xl font-bold mb-6">Your Top 25 Tracks</h1>
-        <p className="text-md text-gray-700 mb-8">A curated view of the songs you've been playing the most.</p>
+        <p className="text-md text-gray-700 mb-8">A curated view of the songs you&apos;ve been playing the most.</p>
         
         {loading ? (
           <p>Loading tracks...</p>

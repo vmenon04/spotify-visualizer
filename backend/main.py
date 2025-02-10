@@ -15,7 +15,7 @@ app = FastAPI()
 SPOTIFY_API_BASE = "https://api.spotify.com/v1"
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-REDIRECT_URI = "http://localhost:8000/callback"
+REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://localhost:8000/callback")
 
 # Store access & refresh tokens
 TOKEN_STORAGE = {"access_token": None, "refresh_token": None}
