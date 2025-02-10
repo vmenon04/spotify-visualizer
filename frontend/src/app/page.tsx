@@ -25,19 +25,17 @@ export default function Home() {
         const data = await response.json();
         console.log("🔍 DEBUG: Auth Check Response →", data);
         if (data.logged_in) {
-          setToken(data.token);
-          setShowDialog(false);
-        } else {
-            // ✅ If no cookie and Safari is blocking, show warning
-            const storedToken = localStorage.getItem("spotify_token");
-            if (storedToken) {
-              console.log("✅ Using token from localStorage");
-              setToken(storedToken);
-              setShowDialog(false);
-            } else {
-              setShowTrackingWarning(true);
+            // ✅ Use token from cookies if available
+            setToken(data.token);
+            setShowDialog(false);
+            localStorage.setItem("spotify_token", data.token); // ✅ Store as backup
+          } else {
+            // ✅ Check if user returned from Spotify but is still not logged in
+            if (document.referrer.includes("accounts.spotify.com")) {
+              console.log("❌ Login failed due to cross-site tracking prevention.");
+              setShowTrackingWarning(true); // ✅ Show warning
             }
-        }
+          }
         setLoading(false);
       } catch (error) {
         console.error("Error checking auth status:", error);
