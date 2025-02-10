@@ -21,6 +21,8 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 # Store access & refresh tokens
 TOKEN_STORAGE = {"access_token": None, "refresh_token": None}
 
+print(f"🔍 DEBUG: Allowed Origin → {FRONTEND_URL}")  # ✅ Check if this is correct
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[FRONTEND_URL],\
