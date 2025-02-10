@@ -51,6 +51,7 @@ def callback(request: Request, code: str = None):
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
+
     response = requests.post(token_url, data=data, headers=headers)
     token_info = response.json()
 
@@ -159,7 +160,11 @@ def get_top_tracks(request: Request):
         headers = get_headers(request)
         response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=headers)
 
+    print("Spotify API Response Status:", response.status_code)
+    print("Spotify API Response Content:", response.text)  # Log the raw text
+    
     data = response.json()
+    
     if "items" not in data:
         raise HTTPException(status_code=500, detail="Invalid response from Spotify")
 
