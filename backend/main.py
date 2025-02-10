@@ -42,7 +42,7 @@ def callback(request: Request, code: str = None):
     data = {
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": SPOTIFY_REDIRECT_URI,
+        "redirect_uri": REDIRECT_URI,
         "client_id": SPOTIFY_CLIENT_ID,
         "client_secret": SPOTIFY_CLIENT_SECRET,
     }
