@@ -15,7 +15,7 @@ export default function Top25() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/top-tracks`, {credentials: "include"})  
+    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/top-tracks`, {method: "GET", credentials: "include"})  
       .then((res) => res.json())
       .then((data) => {
         console.log("API Response:", data); // ✅ Debug Log

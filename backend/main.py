@@ -111,34 +111,47 @@ def get_headers():
         raise HTTPException(status_code=401, detail="Missing Spotify access token. Please log in.")
     return {"Authorization": f"Bearer {TOKEN_STORAGE['access_token']}"}
 
-def refresh_access_token():
-    if not TOKEN_STORAGE["refresh_token"]:
-        raise HTTPException(status_code=401, detail="No refresh token available. Please log in again.")
+@app.get("/refresh-token")
+def refresh_token():
+    refresh_token = TOKEN_STORAGE.get("refresh_token")
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="Refresh token not found")
 
     token_url = "https://accounts.spotify.com/api/token"
-    payload = {
+    data = {
         "grant_type": "refresh_token",
-        "refresh_token": TOKEN_STORAGE["refresh_token"],
+        "refresh_token": refresh_token,
         "client_id": SPOTIFY_CLIENT_ID,
         "client_secret": SPOTIFY_CLIENT_SECRET,
     }
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-    response = requests.post(token_url, data=payload)
+    response = requests.post(token_url, data=data, headers=headers)
     token_info = response.json()
 
     if "access_token" in token_info:
         TOKEN_STORAGE["access_token"] = token_info["access_token"]
+        return {"access_token": token_info["access_token"]}
     else:
-        raise HTTPException(status_code=400, detail="Failed to refresh access token")
+        return JSONResponse({"error": "Failed to refresh token", "details": token_info}, status_code=400)
+
 
 @app.get("/top-tracks")
 def get_top_tracks():
     token = TOKEN_STORAGE.get("access_token")
     if not token:
+        print("🚨 No access token found in TOKEN_STORAGE")
         return JSONResponse({"error": "Not authenticated"}, status_code=401)
 
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get("https://api.spotify.com/v1/me/top/tracks?limit=25", headers=headers)
+
+    if response.status_code == 401:
+        print("🚨 Token expired, refreshing...")
+        refresh_token()
+        headers["Authorization"] = f"Bearer {TOKEN_STORAGE['access_token']}"
+        response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=headers)
+    
     data = response.json()
     
     if "items" not in data:
