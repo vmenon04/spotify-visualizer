@@ -8,12 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState(true);
+  const [showTrackingWarning, setShowTrackingWarning] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Check login status from the backend
 
   useEffect(() => {
     console.log("✅ Running auth check...");
+
     const checkAuthStatus = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {
@@ -25,16 +27,17 @@ export default function Home() {
         if (data.logged_in) {
           setToken(data.token);
           setShowDialog(false);
-          localStorage.setItem("spotify_token", data.token); 
         } else {
-            // ✅ If no cookie token, check localStorage
+            // ✅ If no cookie and Safari is blocking, show warning
             const storedToken = localStorage.getItem("spotify_token");
             if (storedToken) {
               console.log("✅ Using token from localStorage");
               setToken(storedToken);
               setShowDialog(false);
+            } else {
+              setShowTrackingWarning(true);
             }
-          }
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error checking auth status:", error);
@@ -50,8 +53,32 @@ export default function Home() {
   if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
+    
     <div className="bg-white text-black min-h-screen flex flex-col items-center px-6">
       <Navbar />
+
+        {/* ✅ New Dialog for Cross-Site Tracking Issue */}
+            <Dialog open={showTrackingWarning} onOpenChange={setShowTrackingWarning}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enable Cross-Site Tracking</DialogTitle>
+          </DialogHeader>
+          <p className="mb-6 text-gray-600">
+            Safari may be blocking login due to "Prevent Cross-Site Tracking." Please disable it in:
+          </p>
+          <ul className="list-disc list-inside text-gray-600">
+            <li>Open **Safari** on your device.</li>
+  const [showTrackingWarning, setShowTrackingWarning] = useState(false);
+            <li>Go to **Settings &gt; Safari**.</li>
+            <li>Find **"Prevent Cross-Site Tracking"** and turn it **OFF**.</li>
+            <li>Reload this page and try again.</li>
+          </ul>
+          <Button onClick={() => setShowTrackingWarning(false)} className="mt-4 bg-black text-white">
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent>
           <DialogHeader>
@@ -60,26 +87,13 @@ export default function Home() {
           <p className="mb-6 text-gray-600">Log in with Spotify to explore your listening habits.</p>
           <Button
             className="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition"
-            onClick={async () => {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/login`, {
-                method: "GET",
-                credentials: "include", // ✅ Ensures cookies are included
-                });
-
-                const data = await response.json();
-                if (data.access_token) {
-                    console.log("✅ Token received from backend:", data.access_token);
-                    localStorage.setItem("spotify_token", data.access_token); // ✅ Store in localStorage as backup
-                    setToken(data.access_token);
-                    setShowDialog(false);
-                } else {
-                    console.error("❌ Login failed:", data);
-                }
-            }}
-            >
+            onClick={() => {
+                window.location.href = `${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/login`; // ✅ Uses env variable
+              }}
+              
+          >
             Connect with Spotify
-            </Button>
-
+          </Button>
         </DialogContent>
       </Dialog>
 
