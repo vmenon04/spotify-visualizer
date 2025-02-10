@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Home() {
-  const [token, setToken] = useState<string | null>(null);
+  const [token] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState(true);
   const [loading, setLoading] = useState(true);
 
@@ -26,9 +26,6 @@ export default function Home() {
         .catch(() => setLoading(false));
     }, []);
     
-  
-  
-  
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
 
