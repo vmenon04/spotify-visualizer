@@ -16,6 +16,7 @@ SPOTIFY_API_BASE = "https://api.spotify.com/v1"
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "https://spotify-visualizer-api.onrender.com/callback")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # Store access & refresh tokens
 TOKEN_STORAGE = {"access_token": None, "refresh_token": None}
@@ -53,7 +54,7 @@ def callback(request: Request, code: str = None):
     if "access_token" in token_info:
         TOKEN_STORAGE["access_token"] = token_info["access_token"]
         TOKEN_STORAGE["refresh_token"] = token_info.get("refresh_token")
-        return RedirectResponse("http://localhost:3000")
+        return RedirectResponse(f"{FRONTEND_URL}")  
 
     return JSONResponse({"error": "Authentication failed", "details": token_info}, status_code=400)
 
