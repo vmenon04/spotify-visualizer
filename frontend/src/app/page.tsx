@@ -6,25 +6,35 @@ import Navbar from "@/components/Navbar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Home() {
-  const [token] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState(true);
   const [loading, setLoading] = useState(true);
 
   // Check login status from the backend
-    useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {
-            credentials: "include", // Include cookies in requests
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log("🔍 DEBUG: Auth Check Response:", data); // Ensure this logs the correct status
-            if (data.logged_in) {
-            setShowDialog(false); // Close the dialog
-            }
-            setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    }, []);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {
+          method: "GET",
+          credentials: "include", // Include cookies
+        });
+        const data = await response.json();
+        console.log("🔍 DEBUG: Auth Check Response →", data);
+        if (data.logged_in) {
+          setToken(data.token);
+          setShowDialog(false);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error checking auth status:", error);
+        setLoading(false);
+      }
+    };
+  
+    checkAuthStatus();
+  }, []);
+  
     
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;

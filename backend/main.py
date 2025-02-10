@@ -62,7 +62,8 @@ def callback(request: Request, code: str = None):
             value=token_info["access_token"],
             httponly=True,  # Ensures the cookie is only accessible via HTTP requests
             secure=True,    # Ensures the cookie is only sent over HTTPS
-            samesite="Strict",  # Prevents cross-site requests from sending the cookie
+            samesite="None",  # Prevents cross-site requests from sending the cookie
+            domain="spotify-visualizer-api.onrender.com",
             max_age=3600    # Sets the cookie to expire in 1 hour
         )
 
