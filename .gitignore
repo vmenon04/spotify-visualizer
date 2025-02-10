@@ -1,0 +1,15 @@
+# Ignore environment variables
+.env
+.env.local
+
+# Ignore Python virtual environments
+venv/
+__pycache__/
+*.pyc
+
+# Ignore Node.js dependencies
+node_modules/
+.next/
+
+# Ignore OS/system files
+.DS_Store
