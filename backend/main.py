@@ -73,9 +73,6 @@ def callback(request: Request, code: str = None):
     print("🚨 Failed to retrieve tokens:", token_info)
     return JSONResponse({"error": "Authentication failed", "details": token_info}, status_code=400)
 
-
-
-
 @app.get("/login")
 def login():
     auth_url = (
@@ -87,8 +84,6 @@ def login():
     )
     return RedirectResponse(auth_url)
 
-from fastapi import Cookie
-
 @app.get("/auth-status")
 def auth_status(request: Request):
     cookies = request.cookies
@@ -99,23 +94,23 @@ def auth_status(request: Request):
     return {"logged_in": is_logged_in, "token": token if is_logged_in else None}
 
 
-
-
-
 @app.get("/get-token")
 def get_token():
     if not TOKEN_STORAGE["access_token"]:
         raise HTTPException(status_code=401, detail="No token found")
     return {"access_token": TOKEN_STORAGE["access_token"]}
 
-def get_headers():
-    if not TOKEN_STORAGE["access_token"]:
-        raise HTTPException(status_code=401, detail="Missing Spotify access token. Please log in.")
-    return {"Authorization": f"Bearer {TOKEN_STORAGE['access_token']}"}
+def get_headers(request: Request):
+    """Retrieve access token from cookies and construct authorization headers."""
+    access_token = request.cookies.get("spotify_token")
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"Authorization": f"Bearer {access_token}"}
+
 
 @app.get("/refresh-token")
-def refresh_token():
-    refresh_token = TOKEN_STORAGE.get("refresh_token")
+def refresh_token(request: Request):
+    refresh_token = request.cookies.get("spotify_refresh_token")
     if not refresh_token:
         raise HTTPException(status_code=401, detail="Refresh token not found")
 
@@ -132,32 +127,31 @@ def refresh_token():
     token_info = response.json()
 
     if "access_token" in token_info:
-        TOKEN_STORAGE["access_token"] = token_info["access_token"]
-        return {"access_token": token_info["access_token"]}
+        access_token = token_info["access_token"]
+        new_refresh_token = token_info.get("refresh_token", refresh_token)
+
+        redirect = JSONResponse({"message": "Token refreshed"})
+        redirect.set_cookie("spotify_token", access_token, httponly=True, secure=True, samesite="None")
+        redirect.set_cookie("spotify_refresh_token", new_refresh_token, httponly=True, secure=True, samesite="None")
+        return redirect
     else:
-        return JSONResponse({"error": "Failed to refresh token", "details": token_info}, status_code=400)
+        raise HTTPException(status_code=400, detail="Failed to refresh token")
 
 
 @app.get("/top-tracks")
-def get_top_tracks():
-    token = request.cookies.get("spotify_token")
-    if not token:
-        print("🚨 No access token found in TOKEN_STORAGE")
-        return JSONResponse({"error": "Not authenticated"}, status_code=401)
-
-    headers = {"Authorization": f"Bearer {token}"}
+def get_top_tracks(request: Request):
+    headers = get_headers(request)
     response = requests.get("https://api.spotify.com/v1/me/top/tracks?limit=25", headers=headers)
 
     if response.status_code == 401:
         print("🚨 Token expired, refreshing...")
-        refresh_token()
-        headers["Authorization"] = f"Bearer {TOKEN_STORAGE['access_token']}"
+        refresh_token(request)
+        headers = get_headers(request)
         response = requests.get("https://api.spotify.com/v1/me/top/tracks", headers=headers)
-    
+
     data = response.json()
-    
     if "items" not in data:
-        return JSONResponse({"error": "Invalid response from Spotify"}, status_code=500)
+        raise HTTPException(status_code=500, detail="Invalid response from Spotify")
 
     tracks = [
         {
