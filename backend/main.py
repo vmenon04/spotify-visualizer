@@ -16,7 +16,7 @@ SPOTIFY_API_BASE = "https://api.spotify.com/v1"
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "localhost:8000/callback")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 
 # Store access & refresh tokens
 TOKEN_STORAGE = {"access_token": None, "refresh_token": None}
