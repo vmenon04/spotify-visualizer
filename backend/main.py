@@ -35,6 +35,7 @@ app.add_middleware(
 def root():
     return {"message": "API is running"}
 
+# Add the Set-Cookie header in the callback
 @app.get("/callback")
 def callback(request: Request, code: str = None):
     if not code:
@@ -53,24 +54,21 @@ def callback(request: Request, code: str = None):
     response = requests.post(token_url, data=data, headers=headers)
     token_info = response.json()
 
-    print("🔍 DEBUG: Spotify Token Response:", token_info)  # ✅ Check if token is received
-
     if "access_token" in token_info:
-        access_token = token_info["access_token"]
-
-        # ✅ Set a cookie to persist login
-        response = RedirectResponse(f"{FRONTEND_URL}")
-        response.set_cookie(
-            key="spotify_access_token",
-            value=access_token,
-            httponly=True,
-            secure=True,  # Set to False for local testing
-            samesite="Lax",
+        # Use cookies to store the token
+        redirect = RedirectResponse(f"{FRONTEND_URL}")
+        redirect.set_cookie(
+            key="spotify_token",
+            value=token_info["access_token"],
+            httponly=True,  # Prevent access from JavaScript
+            secure=True,    # Use HTTPS in production
+            samesite="Strict",  # Protect against CSRF
+            max_age=3600,  # 1 hour expiration
         )
-        print("✅ Cookie Set Successfully")  # ✅ Debugging cookie setting
-        return response
+        return redirect
 
     return JSONResponse({"error": "Authentication failed", "details": token_info}, status_code=400)
+
 
 
 
@@ -88,9 +86,13 @@ def login():
 from fastapi import Cookie
 
 @app.get("/auth-status")
-def auth_status(spotify_access_token: str = Cookie(None)):
-    print("🔍 DEBUG: Checking if user is logged in")  # ✅ Debug
-    return {"logged_in": bool(spotify_access_token), "token": spotify_access_token}
+def auth_status(request: Request):
+    token = request.cookies.get("spotify_token")
+    is_logged_in = bool(token)
+    print(f"🔍 DEBUG: Auth Check Response → logged_in: {is_logged_in}, token: {token}")
+    return {"logged_in": is_logged_in, "token": token if is_logged_in else None}
+
+
 
 
 @app.get("/get-token")
