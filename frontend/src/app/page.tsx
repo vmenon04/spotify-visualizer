@@ -13,6 +13,7 @@ export default function Home() {
   // Check login status from the backend
 
   useEffect(() => {
+    console.log("✅ Running auth check...");
     const checkAuthStatus = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/auth-status`, {

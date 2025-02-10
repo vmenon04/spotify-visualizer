@@ -87,6 +87,7 @@ def login():
 @app.get("/auth-status")
 def auth_status(request: Request):
     cookies = request.cookies
+    print(f"🔍 DEBUG: Cookies Received → {cookies}")
     token = cookies.get("spotify_token")
     print(f"🔍 DEBUG: Cookies Received → {cookies}")  # Logs all cookies sent in the request
     is_logged_in = bool(token)
