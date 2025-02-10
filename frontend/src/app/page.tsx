@@ -82,16 +82,16 @@ export default function Home() {
             <p className="mb-6 text-gray-600">
             Your browser may be blocking login due to <em>Prevent Cross-Site Tracking</em>. Follow these steps to fix it:
             </p>
-            <p className="mb-4 text-gray-800 font-semibold">If you're using Safari:</p>
+            <p className="mb-4 text-gray-800 font-semibold">If you&apos;re using Safari:</p>
             <ul className="list-disc list-inside text-gray-600">
             <li>Open <strong>Safari</strong> on your device.</li>
             <li>Go to <strong>Settings &gt; Safari</strong>.</li>
             <li>Find <em>Prevent Cross-Site Tracking</em> and turn it <strong>OFF</strong>.</li>
             <li>Reload this page and try again.</li>
             </ul>
-            <p className="mt-4 mb-4 text-gray-800 font-semibold">If you're using another browser:</p>
+            <p className="mt-4 mb-4 text-gray-800 font-semibold">If you&apos;re using another browser:</p>
             <ul className="list-disc list-inside text-gray-600">
-            <li>Check your browser's privacy settings.</li>
+            <li>Check your browser&apos;s privacy settings.</li>
             <li>Ensure cookies and cross-site tracking are allowed.</li>
             <li>Try logging in again.</li>
             </ul>
