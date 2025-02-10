@@ -55,6 +55,7 @@ def callback(request: Request, code: str = None):
     token_info = response.json()
 
     if "access_token" in token_info:
+        print("✅ Access token and refresh token stored successfully")
         # Use cookies to store the token
         redirect = RedirectResponse(f"{FRONTEND_URL}")
         redirect.set_cookie(
@@ -69,6 +70,7 @@ def callback(request: Request, code: str = None):
 
         return redirect
 
+    print("🚨 Failed to retrieve tokens:", token_info)
     return JSONResponse({"error": "Authentication failed", "details": token_info}, status_code=400)
 
 
@@ -138,7 +140,7 @@ def refresh_token():
 
 @app.get("/top-tracks")
 def get_top_tracks():
-    token = TOKEN_STORAGE.get("access_token")
+    token = request.cookies.get("spotify_token")
     if not token:
         print("🚨 No access token found in TOKEN_STORAGE")
         return JSONResponse({"error": "Not authenticated"}, status_code=401)
