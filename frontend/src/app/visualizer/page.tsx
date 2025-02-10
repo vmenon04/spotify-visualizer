@@ -9,7 +9,7 @@ export default function Visualizer() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/taste-visualizer`, {credentials: "include"})  
+    fetch(`${process.env.NEXT_PUBLIC_SPOTIFY_API_URL}/taste-visualizer`, {method: "GET", credentials: "include"})  
       .then((res) => res.json())
       .then((data) => {
         if (data.tracks) {

@@ -173,7 +173,8 @@ def get_visualizer_data():
         url = f"{SPOTIFY_API_BASE}/me/tracks?limit=50"
 
         while url:
-            response = requests.get(url, headers=get_headers())
+            headers = get_headers(request)
+            response = requests.get(url, headers=headers)
             data = response.json()
 
             if response.status_code != 200:
@@ -267,16 +268,12 @@ def get_saved_tracks():
     Fetch all saved tracks and return album covers, track names, artist names, album names, release dates, durations, and popularity scores.
     """
     try:
-        token = TOKEN_STORAGE.get("access_token")
-        if not token:
-            raise HTTPException(status_code=401, detail="Unauthorized")
-
-        headers = {"Authorization": f"Bearer {token}"}
         all_tracks = []
         url = f"{SPOTIFY_API_BASE}/me/tracks?limit=50"
 
         # Fetch all saved tracks with pagination
         while url:
+            headers = get_headers(request)
             response = requests.get(url, headers=headers)
             data = response.json()
 
