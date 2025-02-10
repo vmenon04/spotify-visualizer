@@ -22,7 +22,7 @@ export default function Visualizer() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: { payload: any }[] }) => {
     if (active && payload && payload.length) {
       const track = payload[0].payload;
       return (
