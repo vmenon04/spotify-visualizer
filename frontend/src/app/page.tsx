@@ -25,7 +25,16 @@ export default function Home() {
         if (data.logged_in) {
           setToken(data.token);
           setShowDialog(false);
-        }
+          localStorage.setItem("spotify_token", data.token); 
+        } else {
+            // ✅ If no cookie token, check localStorage
+            const storedToken = localStorage.getItem("spotify_token");
+            if (storedToken) {
+              console.log("✅ Using token from localStorage");
+              setToken(storedToken);
+              setShowDialog(false);
+            }
+          }
         setLoading(false);
       } catch (error) {
         console.error("Error checking auth status:", error);

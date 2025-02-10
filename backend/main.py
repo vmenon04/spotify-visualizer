@@ -55,6 +55,9 @@ def callback(request: Request, code: str = None):
     token_info = response.json()
 
     if "access_token" in token_info:
+        access_token = token_info["access_token"]
+        refresh_token = token_info.get("refresh_token", "")
+
         print("✅ Access token and refresh token stored successfully")
         # Use cookies to store the token
         redirect = RedirectResponse(f"{FRONTEND_URL}")
@@ -66,6 +69,15 @@ def callback(request: Request, code: str = None):
             samesite="None",  # Prevents cross-site requests from sending the cookie
             domain="spotify-visualizer-api.onrender.com",
             max_age=3600    # Sets the cookie to expire in 1 hour
+        )
+        redirect.set_cookie(
+            key="spotify_refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=True,
+            samesite="None",
+            domain="spotify-visualizer-api.onrender.com",
+            max_age=86400  # 1-day expiration
         )
 
         return redirect
@@ -87,7 +99,6 @@ def login():
 @app.get("/auth-status")
 def auth_status(request: Request):
     cookies = request.cookies
-    print(f"🔍 DEBUG: Cookies Received → {cookies}")
     token = cookies.get("spotify_token")
     print(f"🔍 DEBUG: Cookies Received → {cookies}")  # Logs all cookies sent in the request
     is_logged_in = bool(token)
